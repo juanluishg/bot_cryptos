@@ -6,51 +6,7 @@ root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.append(root + '/python')
 
 import ccxt  # noqa: E402
-
-
-def style(s, style):
-    return style + s + '\033[0m'
-
-
-def green(s):
-    return style(s, '\033[92m')
-
-
-def blue(s):
-    return style(s, '\033[94m')
-
-
-def yellow(s):
-    return style(s, '\033[93m')
-
-
-def red(s):
-    return style(s, '\033[91m')
-
-
-def pink(s):
-    return style(s, '\033[95m')
-
-
-def bold(s):
-    return style(s, '\033[1m')
-
-
-def underline(s):
-    return style(s, '\033[4m')
-
-
-def dump(*args):
-    print(' '.join([str(arg) for arg in args]))
-
-
-def print_exchanges():
-    dump('Supported exchanges:', ', '.join(ccxt.exchanges))
-
-
-def print_usage():
-    dump("Usage: python " + sys.argv[0], green('id1'), yellow('id2'), blue('id3'), '...')
-
+import style as st
 
 proxies = [
     '',  # no proxy by default
@@ -61,8 +17,8 @@ proxies = [
 if len(sys.argv) > 2:
     ids = list(sys.argv[1:])
     exchanges = {}
-    dump(ids)
-    dump(yellow(' '.join(ids)))
+    st.dump(ids)
+    st.dump(st.yellow(' '.join(ids)))
     for id in ids:  # load all markets from all exchange exchanges
 
         # instantiate the exchange by id
@@ -89,23 +45,23 @@ if len(sys.argv) > 2:
                 exchange.load_markets()
 
             except ccxt.DDoSProtection as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except ccxt.RequestTimeout as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except ccxt.AuthenticationError as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except ccxt.ExchangeNotAvailable as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except ccxt.ExchangeError as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except ccxt.NetworkError as e:
-                dump(yellow(type(e).__name__), e.args)
+                st.dump(st.yellow(type(e).__name__), e.args)
             except Exception as e:  # reraise all other exceptions
                 raise
 
-        dump(green(id), 'loaded', green(str(len(exchange.symbols))), 'markets')
+        st.dump(st.green(id), 'loaded', st.green(str(len(exchange.symbols))), 'markets')
 
-    dump(green('Loaded all markets'))
+    st.dump(st.green('Loaded all markets'))
 
     allSymbols = [symbol for id in ids for symbol in exchanges[id].symbols]
 
@@ -117,8 +73,8 @@ if len(sys.argv) > 2:
 
     # print a table of arbitrable symbols
     table = []
-    dump(green(' symbol          | ' + ''.join([' {:<15} | '.format(id) for id in ids])))
-    dump(green(''.join(['-----------------+-' for x in range(0, len(ids) + 1)])))
+    st.dump(st.green(' symbol          | ' + ''.join([' {:<15} | '.format(id) for id in ids])))
+    st.dump(st.green(''.join(['-----------------+-' for x in range(0, len(ids) + 1)])))
 
     for symbol in arbitrableSymbols:
         string = ' {:<15} | '.format(symbol)
@@ -126,7 +82,7 @@ if len(sys.argv) > 2:
         for id in ids:
             # if a symbol is present on a exchange print that exchange's id in the row
             string += ' {:<15} | '.format(id if symbol in exchanges[id].symbols else '')
-        dump(string)
+        st.dump(string)
 
 else:
-    print_usage()
+    st.print_usage()
