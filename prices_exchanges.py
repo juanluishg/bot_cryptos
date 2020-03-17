@@ -50,3 +50,5 @@ if len(sys.argv) > 2:
             print(string)
     except:
         print(sym)
+else:
+    print ("Bad arguments")
